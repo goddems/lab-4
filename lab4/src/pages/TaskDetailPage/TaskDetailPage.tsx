@@ -1,64 +1,77 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { useTasksStore } from '../../store/useTasksStore';
-import styles from './TaskDetailPage.module.css';
-
-const statusLabels: Record<string, string> = {
-  'todo': 'До виконання',
-  'in-progress': 'В процесі',
-  'done': 'Виконано',
-};
-
-const priorityLabels: Record<string, string> = {
-  'low': 'Низький',
-  'medium': 'Середній',
-  'high': 'Високий',
-};
+import { Link, useNavigate, useParams } from "react-router";
+import type { Task, TaskStatus } from "../../types/task";
+import { useTasksStore } from "../../store/useTasksStore";
+import styles from "./TaskDetailPage.module.css";
 
 export default function TaskDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const tasks = useTasksStore((state) => state.tasks);
-  
+  const { tasks, updateTask, deleteTask } = useTasksStore();
+
   const task = tasks.find((t) => t.id === id);
 
   if (!task) {
     return (
-      <div className={styles.container}>
-        <h2>Задачу не знайдено</h2>
-        <button onClick={() => navigate('/tasks')}>Назад до списку</button>
+      <div className={styles.notFound}>
+        <p>❌ Задачу не знайдено.</p>
+        <Link to="/tasks">← Назад до списку</Link>
       </div>
     );
   }
 
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateTask(task.id, { status: e.target.value as TaskStatus });
+  };
+
+  const handleDelete = () => {
+    deleteTask(task.id);
+    navigate("/tasks");
+  };
+
   return (
     <div className={styles.container}>
-      <button className={styles.backButton} onClick={() => navigate('/tasks')}>
-        ← Назад
-      </button>
-      
+      <Link to="/tasks" className={styles.back}>
+        ← Назад до списку
+      </Link>
+
       <div className={styles.card}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>{task.title}</h1>
-          <span className={`${styles.priority} ${styles[task.priority]}`}>
-            {priorityLabels[task.priority]}
-          </span>
-        </div>
-        
+        <h2 className={styles.title}>{task.title}</h2>
+
+        {task.description && (
+          <p className={styles.description}>{task.description}</p>
+        )}
+
         <div className={styles.meta}>
-          <span className={`${styles.status} ${styles[task.status]}`}>
-            {statusLabels[task.status]}
-          </span>
-          <span className={styles.date}>
-            Створено: {task.createdAt.toLocaleDateString('uk-UA')}
-          </span>
+          <div>
+            <label>Пріоритет: </label>
+            {task.priority === "high"
+              ? "🔴 Високий"
+              : task.priority === "medium"
+                ? "🟡 Середній"
+                : "🟢 Низький"}
+          </div>
+          <div>
+            <label>Статус: </label>
+            <select
+              className={styles.select}
+              value={task.status}
+              onChange={handleStatusChange}
+            >
+              <option value="todo">📌 Очікує</option>
+              <option value="in-progress">⚙️ В роботі</option>
+              <option value="done">✅ Виконано</option>
+            </select>
+          </div>
+          <div>
+            <label>Створено: </label>
+            {task.createdAt.toLocaleDateString("uk-UA")}
+          </div>
         </div>
-        
-        <div className={styles.content}>
-          <h3>Опис</h3>
-          <p>{task.description}</p>
-        </div>
+
+        <button className={styles.deleteBtn} onClick={handleDelete}>
+          🗑️ Видалити задачу
+        </button>
       </div>
     </div>
   );
-};
+}

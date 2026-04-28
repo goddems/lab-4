@@ -1,87 +1,97 @@
 .card {
-  background: white;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #cbd5e1;
   border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: box-shadow 0.15s;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.low {
+  border-left-color: #22c55e;
+}
+.medium {
+  border-left-color: #f59e0b;
+}
+.high {
+  border-left-color: #ef4444;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .title {
-  margin: 0;
-  font-size: 1.25rem;
-  color: #2c3e50;
-}
-
-.priority {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  font-size: 1rem;
   font-weight: 600;
-  text-transform: uppercase;
+  color: #1e293b;
+  margin: 0;
 }
 
-.priority.low {
-  background-color: #d5f5e3;
-  color: #27ae60;
-}
-
-.priority.medium {
-  background-color: #fdebd0;
-  color: #f39c12;
-}
-
-.priority.high {
-  background-color: #fadbd8;
-  color: #e74c3c;
+.badge {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: #64748b;
 }
 
 .description {
-  color: #7f8c8d;
-  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
   line-height: 1.5;
 }
 
 .footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
 }
 
-.status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-weight: 500;
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
-.status.todo {
-  background-color: #ebedef;
-  color: #7f8c8d;
+.detailBtn {
+  flex: 1;
+  padding: 0.4rem 0.75rem;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
 }
 
-.status.in-progress {
-  background-color: #d6eaf8;
-  color: #3498db;
+.detailBtn:hover {
+  background: #2563eb;
 }
 
-.status.done {
-  background-color: #d5f5e3;
-  color: #27ae60;
+.deleteBtn {
+  padding: 0.4rem 0.75rem;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
 }
 
-.date {
-  color: #95a5a6;
+.deleteBtn:hover {
+  background: #fecaca;
 }

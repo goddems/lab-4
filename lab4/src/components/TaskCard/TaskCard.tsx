@@ -1,42 +1,61 @@
-import React from 'react';
-import { Task } from '../../types/task';
-import styles from './TaskCard.module.css';
+import { useNavigate } from "react-router";
+import type { Task, TaskPriority, TaskStatus } from "../../types/task";
+import styles from "./TaskCard.module.css";
+
+const PRIORITY_LABELS: Record<TaskPriority, string> = {
+  low: "🟢 Низький",
+  medium: "🟡 Середній",
+  high: "🔴 Високий",
+};
+
+const STATUS_LABELS: Record<TaskStatus, string> = {
+  todo: "📌 Очікує",
+  "in-progress": "⚙️ В роботі",
+  done: "✅ Виконано",
+};
 
 interface TaskCardProps {
   task: Task;
-  onClick?: (task: Task) => void;
+  onDelete: (id: string) => void;
 }
 
-const statusLabels: Record<string, string> = {
-  'todo': 'До виконання',
-  'in-progress': 'В процесі',
-  'done': 'Виконано',
-};
+export default function TaskCard({ task, onDelete }: TaskCardProps) {
+  const navigate = useNavigate();
 
-const priorityLabels: Record<string, string> = {
-  'low': 'Низький',
-  'medium': 'Середній',
-  'high': 'Високий',
-};
-
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
   return (
-    <div className={styles.card} onClick={() => onClick?.(task)}>
+    <div className={`${styles.card} ${styles[task.priority]}`}>
       <div className={styles.header}>
         <h3 className={styles.title}>{task.title}</h3>
-        <span className={`${styles.priority} ${styles[task.priority]}`}>
-          {priorityLabels[task.priority]}
-        </span>
+        <span className={styles.badge}>{PRIORITY_LABELS[task.priority]}</span>
       </div>
-      <p className={styles.description}>{task.description}</p>
+
+      {task.description && (
+        <p className={styles.description}>{task.description}</p>
+      )}
+
       <div className={styles.footer}>
-        <span className={`${styles.status} ${styles[task.status]}`}>
-          {statusLabels[task.status]}
-        </span>
-        <span className={styles.date}>
-          {task.createdAt.toLocaleDateString('uk-UA')}
-        </span>
+        <span>{STATUS_LABELS[task.status]}</span>
+        <span>{task.createdAt.toLocaleDateString("uk-UA")}</span>
+      </div>
+
+      <div className={styles.actions}>
+        <button
+          className={styles.detailBtn}
+          onClick={() => {
+            navigate(`/tasks/${task.id}`);
+          }}
+        >
+          Деталі →
+        </button>
+        <button
+          className={styles.deleteBtn}
+          onClick={() => {
+            onDelete(task.id);
+          }}
+        >
+          🗑️ Видалити
+        </button>
       </div>
     </div>
   );
-};
+}

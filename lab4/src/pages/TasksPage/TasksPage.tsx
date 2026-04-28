@@ -1,30 +1,29 @@
-import React from 'react';
-import { useNavigate } from 'react-router';
-import { TaskCard } from '../../components/TaskCard/TaskCard';
-import { useTasksStore } from '../../store/useTasksStore';
-import { Task } from '../../types/task';
+import TaskCard from "../../components/TaskCard/TaskCard";
+import { useTasksStore } from "../../store/useTasksStore";
 
 export default function TasksPage() {
-  const navigate = useNavigate();
-  const tasks = useTasksStore((state) => state.tasks);
-
-  const handleTaskClick = (task: Task) => {
-    navigate(`/tasks/${task.id}`);
-  };
+  const { tasks, deleteTask } = useTasksStore();
 
   return (
     <div>
-      <h2>Всі задачі</h2>
-      <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+      <h2>📋 Задачі ({tasks.length})</h2>
+
+      {tasks.length === 0 && (
+        <p>Задач поки немає. Створіть першу!</p>
+      )}
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.75rem",
+          marginTop: "1rem",
+        }}
+      >
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onClick={handleTaskClick} />
+          <TaskCard key={task.id} task={task} onDelete={deleteTask} />
         ))}
       </div>
     </div>
   );
 }
-        ))}
-      </div>
-    </div>
-  );
-};

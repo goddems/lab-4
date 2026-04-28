@@ -1,98 +1,95 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { TaskStatus, TaskPriority } from '../../types/task';
-import { useTasksStore } from '../../store/useTasksStore';
-import styles from './NewTaskPage.module.css';
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import type { Task, TaskPriority } from "../../types/task";
+import { useTasksStore } from "../../store/useTasksStore";
+import styles from "./NewTaskPage.module.css";
 
 export default function NewTaskPage() {
   const navigate = useNavigate();
   const addTask = useTasksStore((state) => state.addTask);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    status: 'todo' as TaskStatus,
-    priority: 'medium' as TaskPriority,
-  });
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState<TaskPriority>("medium");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addTask(formData);
-    navigate('/tasks');
-  };
+    setError("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (title.trim().length < 3) {
+      setError("Назва має містити щонайменше 3 символи");
+      return;
+    }
+
+    const newTask: Task = {
+      id: crypto.randomUUID(),
+      title: title.trim(),
+      description: description.trim(),
+      status: "todo",
+      priority,
+      createdAt: new Date(),
+    };
+
+    addTask(newTask);
+    navigate("/tasks");
   };
 
   return (
     <div className={styles.container}>
-      <h2>Створити нову задачу</h2>
-      
+      <h2 className={styles.title}>📝 Нова задача</h2>
+
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>
-          <label htmlFor="title">Назва</label>
+          <label htmlFor="title">Назва *</label>
           <input
-            type="text"
             id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Введіть назву задачі"
           />
+          {error && <span className={styles.error}>{error}</span>}
         </div>
 
         <div className={styles.field}>
           <label htmlFor="description">Опис</label>
           <textarea
             id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={4}
-            required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Додатковий опис (необов'язково)"
           />
         </div>
 
-        <div className={styles.row}>
-          <div className={styles.field}>
-            <label htmlFor="status">Статус</label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-            >
-              <option value="todo">До виконання</option>
-              <option value="in-progress">В процесі</option>
-              <option value="done">Виконано</option>
-            </select>
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="priority">Пріоритет</label>
-            <select
-              id="priority"
-              name="priority"
-              value={formData.priority}
-              onChange={handleChange}
-            >
-              <option value="low">Низький</option>
-              <option value="medium">Середній</option>
-              <option value="high">Високий</option>
-            </select>
-          </div>
+        <div className={styles.field}>
+          <label htmlFor="priority">Пріоритет</label>
+          <select
+            id="priority"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as TaskPriority)}
+          >
+            <option value="low">🟢 Низький</option>
+            <option value="medium">🟡 Середній</option>
+            <option value="high">🔴 Високий</option>
+          </select>
         </div>
 
         <div className={styles.actions}>
-          <button type="button" className={styles.cancelButton} onClick={() => navigate('/')}>
-            Скасувати
+          <button type="submit" className={styles.submitBtn}>
+            ✅ Створити задачу
           </button>
-          <button type="submit" className={styles.submitButton}>
-            Створити
+          <button
+            type="button"
+            className={styles.cancelBtn}
+            onClick={() => {
+              navigate("/tasks");
+            }}
+          >
+            Скасувати
           </button>
         </div>
       </form>
     </div>
   );
-};
+}
