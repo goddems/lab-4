@@ -1,23 +1,35 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router';
 import styles from './Layout.module.css';
 
-export const Layout: React.FC = () => {
+export default function Layout() {
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Task Manager</h1>
+        <span className={styles.logo}>📋 Task Manager</span>
         <nav className={styles.nav}>
-          <a href="/">Всі задачі</a>
-          <a href="/new">Нова задача</a>
+          <NavLink
+            to="/tasks"
+            end
+            className={({ isActive }) =>
+              isActive ? `${styles.link} ${styles.active}` : styles.link
+            }
+          >
+            Всі задачі
+          </NavLink>
+          <NavLink
+            to="/tasks/new"
+            className={({ isActive }) =>
+              isActive ? `${styles.link} ${styles.active}` : styles.link
+            }
+          >
+            + Нова задача
+          </NavLink>
         </nav>
       </header>
       <main className={styles.main}>
         <Outlet />
       </main>
-      <footer className={styles.footer}>
-        <p>© 2026 Task Manager</p>
-      </footer>
     </div>
   );
-};
+}

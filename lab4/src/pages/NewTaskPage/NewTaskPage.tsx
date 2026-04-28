@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { TaskStatus, TaskPriority } from '../../types/task';
 import { useTasksStore } from '../../store/useTasksStore';
 import styles from './NewTaskPage.module.css';
 
-export const NewTaskPage: React.FC = () => {
+export default function NewTaskPage() {
   const navigate = useNavigate();
   const addTask = useTasksStore((state) => state.addTask);
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ export const NewTaskPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addTask(formData);
-    navigate('/');
+    navigate('/tasks');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

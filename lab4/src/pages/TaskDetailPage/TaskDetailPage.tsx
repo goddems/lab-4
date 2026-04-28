@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import { useTasksStore } from '../../store/useTasksStore';
 import styles from './TaskDetailPage.module.css';
 
@@ -15,7 +15,7 @@ const priorityLabels: Record<string, string> = {
   'high': 'Високий',
 };
 
-export const TaskDetailPage: React.FC = () => {
+export default function TaskDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const tasks = useTasksStore((state) => state.tasks);
@@ -26,14 +26,14 @@ export const TaskDetailPage: React.FC = () => {
     return (
       <div className={styles.container}>
         <h2>Задачу не знайдено</h2>
-        <button onClick={() => navigate('/')}>Назад до списку</button>
+        <button onClick={() => navigate('/tasks')}>Назад до списку</button>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <button className={styles.backButton} onClick={() => navigate('/')}>
+      <button className={styles.backButton} onClick={() => navigate('/tasks')}>
         ← Назад
       </button>
       
